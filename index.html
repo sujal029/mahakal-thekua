@@ -16,6 +16,7 @@
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
   <meta name="theme-color" content="#0a0a0a"/>
+
   <style>
     body { background-color: #0a0a0a; }
     .perspective-\[1000px\] { perspective: 1000px; }
@@ -35,7 +36,7 @@
         maximumFractionDigits: 0
       }).format(n);
 
-    // contact / business
+    // contact / business info
     const CONTACT = {
       phone: "+91 9993891875",
       phoneDigits: "919993891875",
@@ -44,7 +45,7 @@
     };
 
     // -----------------------
-    // 3D hover / touch wrapper
+    // Tilt3D — 3D hover/touch
     // -----------------------
     function Tilt3D({ children }) {
       const [tilt, setTilt] = React.useState({ x: 0, y: 0, active: false });
@@ -103,7 +104,7 @@
       );
     }
 
-    // biscuit visuals
+    // small biscuit circle
     function BiscuitSmall({ dark = false }) {
       return (
         <div
@@ -120,6 +121,7 @@
       );
     }
 
+    // big biscuit circle
     function BiscuitBig({ dark = false }) {
       return (
         <div
@@ -136,7 +138,7 @@
       );
     }
 
-    // product mock images
+    // product mock: 250g pouch look
     function ProductImage250({ className = "" }) {
       return (
         <div className={"relative w-full h-full flex items-center justify-center " + className}>
@@ -150,7 +152,6 @@
               <div className="text-[8px] text-[#4a0a0a] mt-1">NET WT. 250 g</div>
             </div>
 
-            {/* thekua biscuit stack */}
             <div className="mt-2 flex flex-col items-center">
               <div className="flex gap-1">
                 <BiscuitSmall />
@@ -178,6 +179,7 @@
       );
     }
 
+    // product mock: 500g box look
     function ProductImage500({ className = "" }) {
       return (
         <div className={"relative w-full h-full flex items-center justify-center " + className}>
@@ -221,13 +223,13 @@
       );
     }
 
-    // products data
+    // product data
     const PRODUCTS = [
       { id: "thekua-250", name: "Mahakal Thekua — 250 g", price: 199, weight: "250 g", tag: "Classic • Gur–Saunf", variant: "A" },
       { id: "thekua-500", name: "Mahakal Thekua — 500 g", price: 349, weight: "500 g", tag: "Classic • Gur–Saunf", variant: "D" }
     ];
 
-    // icons / layout bits
+    // icon / brand
     function TrishulLogo() {
       return (
         <svg
@@ -254,7 +256,7 @@
               <TrishulLogo />
               <div>
                 <div className="text-xl font-extrabold tracking-wider text-amber-400 uppercase">
-                  Mahakal Thekua
+                  MAHAKAL THEKUA
                 </div>
                 <div className="text-[11px] text-neutral-400">
                   Prasad-inspired • Ujjain • Since 2024
@@ -287,8 +289,8 @@
             {/* LEFT TEXT */}
             <div>
               <h1 className="mb-3 text-4xl font-black tracking-tight text-white md:text-5xl leading-tight">
-                महाकाल ठेकुआ —{" "}
-                <span className="text-amber-400">Gur • Saunf • Ghee</span>
+                महाकाल ठेकुआ —
+                <span className="text-amber-400"> Gur • Saunf • Ghee</span>
               </h1>
 
               <p className="mb-5 text-neutral-300 max-w-xl">
@@ -371,7 +373,7 @@
                   </Tilt3D>
                 </div>
 
-                {/* product text */}
+                {/* product detail */}
                 <div className="flex-1 flex flex-col">
                   <div className="text-lg font-bold text-white">
                     {p.name}
@@ -416,7 +418,7 @@
       );
     }
 
-    // Story Section (benefits + history)
+    // Story / History / Benefits
     function StorySection() {
       return (
         <section className="mx-auto max-w-6xl px-4 pb-16">
@@ -514,6 +516,7 @@
       );
     }
 
+    // CART DRAWER
     function CartDrawer({
       open,
       items,
@@ -540,6 +543,7 @@
           }
           aria-hidden={!open}
         >
+          {/* dark bg */}
           <div
             className={
               "absolute inset-0 bg-black/60 transition-opacity " +
@@ -672,7 +676,7 @@
       );
     }
 
-    // form inputs
+    // simple form field components
     function Input({ label, ...rest }) {
       return (
         <label className="grid gap-1 text-sm">
@@ -698,7 +702,7 @@
       );
     }
 
-    // CHECKOUT MODAL
+    // ✅ NEW RESPONSIVE CHECKOUT MODAL
     function Checkout({ open, items, onClose }) {
       const [form, setForm] = useState({
         name: "",
@@ -713,8 +717,9 @@
         notes: ""
       });
 
-      const [detailsReady, setDetailsReady] = useState(false);
-      const [orderPlaced, setOrderPlaced] = useState(false);
+      // 2 status flags:
+      const [detailsReady, setDetailsReady] = useState(false); // sent via WhatsApp
+      const [orderPlaced, setOrderPlaced] = useState(false);   // local success
 
       const totals = useMemo(() => {
         const subtotal = items.reduce(
@@ -793,10 +798,11 @@
       const onChange = (e) =>
         setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
 
-      // old button: send details + open WhatsApp
+      // sends details to WhatsApp and marks detailsReady
       const handleSubmitDetails = () => {
         if (!valid || !items.length) return;
         setDetailsReady(true);
+        setOrderPlaced(false);
 
         window.open(
           "https://wa.me/" +
@@ -807,10 +813,11 @@
         );
       };
 
-      // NEW BUTTON: confirm order -> show success message like Amazon
+      // local "Place Order" confirmation (Amazon style success)
       const handlePlaceOrderLocal = () => {
         if (!valid || !items.length) return;
         setOrderPlaced(true);
+        setDetailsReady(false);
       };
 
       return (
@@ -820,6 +827,7 @@
             (open ? "" : "pointer-events-none")
           }
         >
+          {/* dark overlay */}
           <div
             className={
               "absolute inset-0 bg-black/60 transition-opacity " +
@@ -827,12 +835,17 @@
             }
             onClick={onClose}
           />
+
+          {/* centered modal card */}
           <div
             className={
-              "absolute inset-x-0 bottom-0 top-10 mx-auto max-w-3xl transform rounded-t-2xl border border-neutral-800 bg-neutral-950 shadow-2xl transition-all " +
-              (open ? "translate-y-0" : "translate-y-full")
+              "absolute left-1/2 top-1/2 w-[90%] max-w-4xl max-h-[90vh] -translate-x-1/2 -translate-y-1/2 rounded-xl border border-neutral-800 bg-neutral-950 shadow-2xl transition-all " +
+              (open
+                ? "scale-100 opacity-100"
+                : "scale-95 opacity-0 pointer-events-none")
             }
           >
+            {/* header fixed in modal */}
             <div className="flex items-center justify-between border-b border-neutral-800 p-4">
               <h3 className="text-lg font-bold text-white">
                 Checkout
@@ -845,222 +858,222 @@
               </button>
             </div>
 
-            <div className="grid grid-cols-1 gap-6 overflow-y-auto p-4 md:grid-cols-2">
-              {/* LEFT: DELIVERY FORM */}
-              <div>
-                <h4 className="mb-2 text-sm font-semibold text-white">
-                  Delivery Details
-                </h4>
+            {/* scrollable body */}
+            <div className="max-h-[calc(90vh-64px)] overflow-y-auto p-4">
+              <div className="grid gap-6 lg:grid-cols-2">
+                {/* LEFT: DELIVERY FORM + BUTTONS */}
+                <div>
+                  <h4 className="mb-2 text-sm font-semibold text-white">
+                    Delivery Details
+                  </h4>
 
-                <div className="grid grid-cols-1 gap-3">
-                  <Input
-                    label="Full Name"
-                    name="name"
-                    value={form.name}
-                    onChange={onChange}
-                    required
-                  />
-                  <Input
-                    label="Phone (10 digits)"
-                    name="phone"
-                    value={form.phone}
-                    onChange={onChange}
-                    required
-                  />
-                  <Input
-                    label="Email (optional)"
-                    name="email"
-                    value={form.email}
-                    onChange={onChange}
-                  />
-                  <Input
-                    label="Address Line 1"
-                    name="address1"
-                    value={form.address1}
-                    onChange={onChange}
-                    required
-                  />
-                  <Input
-                    label="Address Line 2"
-                    name="address2"
-                    value={form.address2}
-                    onChange={onChange}
-                  />
-
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 gap-3">
                     <Input
-                      label="City"
-                      name="city"
-                      value={form.city}
+                      label="Full Name"
+                      name="name"
+                      value={form.name}
                       onChange={onChange}
                       required
                     />
                     <Input
-                      label="State"
-                      name="state"
-                      value={form.state}
+                      label="Phone (10 digits)"
+                      name="phone"
+                      value={form.phone}
                       onChange={onChange}
                       required
+                    />
+                    <Input
+                      label="Email (optional)"
+                      name="email"
+                      value={form.email}
+                      onChange={onChange}
+                    />
+                    <Input
+                      label="Address Line 1"
+                      name="address1"
+                      value={form.address1}
+                      onChange={onChange}
+                      required
+                    />
+                    <Input
+                      label="Address Line 2"
+                      name="address2"
+                      value={form.address2}
+                      onChange={onChange}
+                    />
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <Input
+                        label="City"
+                        name="city"
+                        value={form.city}
+                        onChange={onChange}
+                        required
+                      />
+                      <Input
+                        label="State"
+                        name="state"
+                        value={form.state}
+                        onChange={onChange}
+                        required
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <Input
+                        label="Pincode"
+                        name="pincode"
+                        value={form.pincode}
+                        onChange={onChange}
+                        required
+                      />
+                      <Input
+                        label="Landmark (optional)"
+                        name="landmark"
+                        value={form.landmark}
+                        onChange={onChange}
+                      />
+                    </div>
+
+                    <Textarea
+                      label="Notes (optional)"
+                      name="notes"
+                      value={form.notes}
+                      onChange={onChange}
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3">
-                    <Input
-                      label="Pincode"
-                      name="pincode"
-                      value={form.pincode}
-                      onChange={onChange}
-                      required
-                    />
-                    <Input
-                      label="Landmark (optional)"
-                      name="landmark"
-                      value={form.landmark}
-                      onChange={onChange}
-                    />
-                  </div>
+                  {/* BUTTON 1: WhatsApp send */}
+                  <button
+                    onClick={handleSubmitDetails}
+                    disabled={!valid || !items.length}
+                    className={
+                      "mt-4 w-full rounded-xl px-4 py-3 text-sm font-bold shadow " +
+                      (valid && items.length
+                        ? "bg-amber-500 text-black hover:bg-amber-400"
+                        : "cursor-not-allowed bg-neutral-800 text-neutral-500")
+                    }
+                  >
+                    Submit Details &amp; Send on WhatsApp
+                  </button>
 
-                  <Textarea
-                    label="Notes (optional)"
-                    name="notes"
-                    value={form.notes}
-                    onChange={onChange}
-                  />
+                  {/* BUTTON 2: Place Order local */}
+                  <button
+                    onClick={handlePlaceOrderLocal}
+                    disabled={!valid || !items.length}
+                    className={
+                      "mt-3 w-full rounded-xl px-4 py-3 text-sm font-bold shadow " +
+                      (valid && items.length
+                        ? "bg-green-600 text-black hover:bg-green-500"
+                        : "cursor-not-allowed bg-neutral-800 text-neutral-500")
+                    }
+                  >
+                    Place Order
+                  </button>
+
+                  {/* status messages */}
+                  {orderPlaced ? (
+                    <div className="mt-3 rounded-xl border border-green-600 bg-green-900/30 p-3 text-xs font-semibold text-green-400">
+                      ✅ Order Placed!<br/>
+                      Mahakal Foods team will confirm by call / WhatsApp.<br/>
+                      Cash / UPI on delivery. धन्यवाद 🙏
+                    </div>
+                  ) : detailsReady ? (
+                    <div className="mt-3 rounded-xl border border-amber-500 bg-amber-900/20 p-3 text-xs font-semibold text-amber-300">
+                      Details sent on WhatsApp ✅<br/>
+                      Wait for confirmation call.
+                    </div>
+                  ) : (
+                    <div className="mt-3 text-[11px] text-neutral-500">
+                      Fill all required fields, then tap any button.
+                    </div>
+                  )}
                 </div>
 
-                {/* SUBMIT DETAILS BUTTON */}
-                <button
-                  onClick={handleSubmitDetails}
-                  disabled={!valid || !items.length}
-                  className={
-                    "mt-4 w-full rounded-xl px-4 py-3 text-sm font-bold shadow " +
-                    (valid && items.length
-                      ? "bg-amber-500 text-black hover:bg-amber-400"
-                      : "cursor-not-allowed bg-neutral-800 text-neutral-500")
-                  }
-                >
-                  Submit Details &amp; Send on WhatsApp
-                </button>
+                {/* RIGHT: ORDER SUMMARY + fallback links */}
+                <div>
+                  <h4 className="mb-2 text-sm font-semibold text-white">
+                    Order Summary
+                  </h4>
 
-                {/* NEW: PLACE ORDER BUTTON */}
-                <button
-                  onClick={handlePlaceOrderLocal}
-                  disabled={!valid || !items.length}
-                  className={
-                    "mt-3 w-full rounded-xl px-4 py-3 text-sm font-bold shadow " +
-                    (valid && items.length
-                      ? "bg-green-600 text-black hover:bg-green-500"
-                      : "cursor-not-allowed bg-neutral-800 text-neutral-500")
-                  }
-                >
-                  Place Order
-                </button>
-
-                {/* status messages below buttons */}
-                {orderPlaced ? (
-                  <div className="mt-3 rounded-xl border border-green-600 bg-green-900/30 p-3 text-xs font-semibold text-green-400">
-                    ✅ Order Placed!  
-                    <br/>
-                    Mahakal Foods team will confirm by call / WhatsApp.
-                    <br/>
-                    Cash / UPI on delivery. धन्यवाद 🙏
-                  </div>
-                ) : detailsReady ? (
-                  <div className="mt-3 rounded-xl border border-amber-500 bg-amber-900/20 p-3 text-xs font-semibold text-amber-300">
-                    Details sent on WhatsApp ✅
-                    <br/>
-                    Wait for confirmation call.
-                  </div>
-                ) : (
-                  <div className="mt-3 text-[11px] text-neutral-500">
-                    Fill all required fields, then tap any button.
-                  </div>
-                )}
-              </div>
-
-              {/* RIGHT: ORDER SUMMARY */}
-              <div>
-                <h4 className="mb-2 text-sm font-semibold text-white">
-                  Order Summary
-                </h4>
-
-                <div className="space-y-3">
-                  <div className="rounded-xl border border-neutral-800 bg-neutral-900 p-3 text-sm text-neutral-200">
-                    {items.length === 0 ? (
-                      <div className="text-sm text-neutral-400">
-                        No items yet. Add products to cart.
-                      </div>
-                    ) : (
-                      <>
-                        {items.map((it) => (
-                          <div
-                            key={it.id}
-                            className="flex justify-between"
-                          >
-                            <span>
-                              {it.name} x {it.qty}
-                            </span>
-                            <span>
-                              {INR(it.price * it.qty)}
-                            </span>
+                    <div className="space-y-3">
+                      <div className="rounded-xl border border-neutral-800 bg-neutral-900 p-3 text-sm text-neutral-200">
+                        {items.length === 0 ? (
+                          <div className="text-sm text-neutral-400">
+                            No items yet. Add products to cart.
                           </div>
-                        ))}
+                        ) : (
+                          <>
+                            {items.map((it) => (
+                              <div
+                                key={it.id}
+                                className="flex justify-between"
+                              >
+                                <span>
+                                  {it.name} x {it.qty}
+                                </span>
+                                <span>
+                                  {INR(it.price * it.qty)}
+                                </span>
+                              </div>
+                            ))}
 
-                        <div className="mt-2 flex justify-between text-neutral-300">
-                          <span>Subtotal</span>
-                          <span>{INR(totals.subtotal)}</span>
-                        </div>
+                            <div className="mt-2 flex justify-between text-neutral-300">
+                              <span>Subtotal</span>
+                              <span>{INR(totals.subtotal)}</span>
+                            </div>
 
-                        <div className="flex justify-between text-neutral-300">
-                          <span>Delivery</span>
-                          <span>{INR(totals.delivery)}</span>
-                        </div>
+                            <div className="flex justify-between text-neutral-300">
+                              <span>Delivery</span>
+                              <span>{INR(totals.delivery)}</span>
+                            </div>
 
-                        <div className="flex justify-between text-base font-extrabold text-white">
-                          <span>Total</span>
-                          <span>{INR(totals.total)}</span>
-                        </div>
-                      </>
-                    )}
-                  </div>
+                            <div className="flex justify-between text-base font-extrabold text-white">
+                              <span>Total</span>
+                              <span>{INR(totals.total)}</span>
+                            </div>
+                          </>
+                        )}
+                      </div>
 
-                  <div className="rounded-xl border border-neutral-800 bg-neutral-900 p-3 text-xs text-neutral-400">
-                    Orders are confirmed by phone/WhatsApp.
-                    Payment: Cash/UPI on delivery (COD).
-                    Best before 3 weeks.
-                  </div>
+                      <div className="rounded-xl border border-neutral-800 bg-neutral-900 p-3 text-xs text-neutral-400">
+                        Orders are confirmed by phone/WhatsApp.
+                        Payment: Cash/UPI on delivery (COD).
+                        Best before 3 weeks.
+                      </div>
 
-                  {/* Manual fallback buttons (still here) */}
-                  <div className="grid grid-cols-1 gap-2">
-                    <a
-                      target="_blank"
-                      href={whatsappHref}
-                      className={
-                        "w-full rounded-xl bg-green-500 px-4 py-3 text-center font-bold text-black hover:bg-green-400 " +
-                        ((!valid || !items.length)
-                          ? "pointer-events-none opacity-40"
-                          : "")
-                      }
-                    >
-                      Place Order on WhatsApp
-                    </a>
+                      {/* backup direct links */}
+                      <div className="grid grid-cols-1 gap-2">
+                        <a
+                          target="_blank"
+                          href={whatsappHref}
+                          className={
+                            "w-full rounded-xl bg-green-500 px-4 py-3 text-center font-bold text-black hover:bg-green-400 " +
+                            ((!valid || !items.length)
+                              ? "pointer-events-none opacity-40"
+                              : "")
+                          }
+                        >
+                          Place Order on WhatsApp
+                        </a>
 
-                    <a
-                      href={mailtoHref}
-                      className={
-                        "w-full rounded-xl bg-amber-500 px-4 py-3 text-center font-bold text-black hover:bg-amber-400 " +
-                        ((!valid || !items.length)
-                          ? "pointer-events-none opacity-40"
-                          : "")
-                      }
-                    >
-                      Send Order by Email
-                    </a>
-                  </div>
+                        <a
+                          href={mailtoHref}
+                          className={
+                            "w-full rounded-xl bg-amber-500 px-4 py-3 text-center font-bold text-black hover:bg-amber-400 " +
+                            ((!valid || !items.length)
+                              ? "pointer-events-none opacity-40"
+                              : "")
+                          }
+                        >
+                          Send Order by Email
+                        </a>
+                      </div>
 
-                  <pre className="mt-3 max-h-48 overflow-auto whitespace-pre-wrap rounded-xl border border-neutral-800 bg-neutral-950 p-3 text-xs text-neutral-300">
+                      <pre className="mt-3 max-h-48 overflow-auto whitespace-pre-wrap rounded-xl border border-neutral-800 bg-neutral-950 p-3 text-xs text-neutral-300">
 {summaryText}
-                  </pre>
+                      </pre>
+                    </div>
                 </div>
               </div>
             </div>
@@ -1105,7 +1118,7 @@
       );
     }
 
-    // APP ROOT
+    // ROOT APP
     function App() {
       const [cartOpen, setCartOpen] = useState(false);
       const [checkoutOpen, setCheckoutOpen] = useState(false);
@@ -1147,10 +1160,7 @@
           <Header onOpenCart={() => setCartOpen(true)} />
           <Hero />
           <Products onAdd={addToCart} />
-
-          {/* story + benefits + how to order */}
           <StorySection />
-
           <Footer />
 
           <CartDrawer
